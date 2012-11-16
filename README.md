@@ -1,18 +1,14 @@
 SpartanHud
 ==========
-Proyecto final POO
-
-Programación Orientada a Objetos
+Proyecto final Programación Orientada a Objetos
 - Montaño Carmona Julio Cesar
   @jmz7v
 - Yang Enrique Silva Neri
   @Merulsed
 
-Descripción:
-Aplicación escrita en Java, que consiste en visualizar imágenes de una carpeta seleccionada del usuario.
 
-Características:
-Lenguaje Java
+Descripción:
+Aplicación escrita en Java, que consiste en visualizar imágenes de una carpeta seleccionada del usuario, en lenguaje Java.
 
 Interfaz:
 Panel donde se muestra la imagen
@@ -35,7 +31,9 @@ Zoom con slider
 Modo diapositiva
 Leer archivos
 
-Distrito Federal, México.
-Escuela Superior de Cómputo ESCOM
-Instituto Politécnico Nacional IPN
-2012
+======
+
+- Distrito Federal, México
+- Escuela Superior de Cómputo ESCOM
+- Instituto Politécnico Nacional IPN
+- 2012
