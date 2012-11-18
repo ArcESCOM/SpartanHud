@@ -1,10 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
 
+import java.awt.event.*;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.*;
 
+public class ArcViewer extends JPanel implements ActionListener {
 
-
-public class ArcViewer extends JPanel {
 	
 	private JPanel areaventana;
 	private JPanel areabotones;
@@ -21,7 +24,12 @@ public class ArcViewer extends JPanel {
 
 	private JMenuBar menu;
 
-	Color colorGris = new Color(0x999999);
+
+	Color colorGris = new Color(0x202020);
+
+
+
+
 
 	public void init() {
 		
@@ -36,12 +44,21 @@ public class ArcViewer extends JPanel {
 		zoom = new JSlider();
 
 		carpeta = new JButton("Seleccionar Carpeta");
+		carpeta.addActionListener(this);
+
+
+
+		chooser = new JFileChooser();
+		chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
 
 		/* Agregando los componentes */
 
-		atras.setBackground(colorGris);
+		
+		areaventana.setBackground(colorGris);
+		areaventana.add(imagen);
 
-		add(imagen);
+
 		areabotones.add(presentacion);
 		areabotones.add(siguente);
 		areabotones.add(atras);
@@ -54,6 +71,26 @@ public class ArcViewer extends JPanel {
 		add(areabotones, BorderLayout.SOUTH); //layout para todos los botones
 	}
 
+
+
+
+
+	public void actionPerformed (ActionEvent event) {
+
+		if (event.getSource() == carpeta) {
+			int returnVal = chooser.showOpenDialog(ArcViewer.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = chooser.getSelectedFile(); }
+			else { }
+		}
+	
+
+	}
+
+
+
+
+
 	public ArcViewer() {
 
 		init(); 
@@ -65,9 +102,11 @@ public class ArcViewer extends JPanel {
 
 		frame.add("Center", this);
 		frame.setSize(900, 600);
-		frame.setVisible(true); }
+		frame.setVisible(true);
+	}
 
 
 	public static void main(String[] args) {
-		new ArcViewer(); }
+		new ArcViewer();
+	}
 }
