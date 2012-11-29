@@ -93,35 +93,29 @@ public class ArcViewer extends JPanel implements ActionListener {
 		chooser.setDialogTitle("Holap");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setAcceptAllFileFilterUsed(false);
+		
+
+		//Abrir archivo es de acá...
 		returnChooser = chooser.showOpenDialog(ArcViewer.this);
 		imagenes = lista.Miranda(chooser, returnChooser);
-
-
 		//Esto hace magia
 		for (int asd1=0; asd1 < imagenes.size(); asd1++) {
 			imagenesbean.add(new ImagenBean(imagenes.get(asd1),0,0));
 		}
-		// imagen.setIcon(new ImageIcon(imagenesbean.get(0).getIcon()));
-
-
-
 		String getImgSelected = chooser.getSelectedFile().getPath();
-		
 		for (int index=0; index < imagenesbean.size(); index++) {
 			if (getImgSelected.equals( imagenesbean.get(index).getIcon() )) {
 				imagen.setIcon(new ImageIcon(imagenesbean.get(index).getIcon()));
 				indexaux = index;
 			}
 		}
-
-
-
-
-
-
+		//Hasta acá...
 
 
 	}
+
+
+
 
 
 
@@ -131,13 +125,28 @@ public class ArcViewer extends JPanel implements ActionListener {
 			posicion = indexaux;
 
 
+
 		//Abrir nueva imagen
-		if (event.getSource() == carpeta) {
-			
+		if (event.getSource() == carpeta) {			
+			//Se repite lo de abrir archivo + IMPORTANTE -> limpiar lista anterior
+			imagenesbean.clear();
+			imagenes.clear();
+			returnChooser = chooser.showOpenDialog(ArcViewer.this);
+			imagenes = lista.Miranda(chooser, returnChooser);
 			for (int asd1=0; asd1 < imagenes.size(); asd1++) {
-				imagenesbean.add(new ImagenBean(imagenes.get(asd1),0,0)); }
-			imagen.setIcon(new ImageIcon(imagenesbean.get(posicion).getIcon()));
+				imagenesbean.add(new ImagenBean(imagenes.get(asd1),0,0));
+			}
+			String getImgSelected = chooser.getSelectedFile().getPath();
+			for (int index=0; index < imagenesbean.size(); index++) {
+				if (getImgSelected.equals( imagenesbean.get(index).getIcon() )) {
+					imagen.setIcon(new ImageIcon(imagenesbean.get(index).getIcon()));
+					indexaux = index;
+				}
+			}
 		}
+
+
+
 		//Imagen siguiente
 		if (event.getSource() == siguiente) {
 			posicion++;
@@ -145,6 +154,9 @@ public class ArcViewer extends JPanel implements ActionListener {
 				posicion = 0; } 
 			imagen.setIcon(new ImageIcon(imagenesbean.get(posicion).getIcon()));
 		}
+
+
+
 		//Imagen anterior
 		if (event.getSource() == atras) {
 			posicion--;
