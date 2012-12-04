@@ -57,9 +57,6 @@ public class ListFiles {
 
 		}
 
-		// for (int count2 = 0; count2 < lista.size(); count2++) {
-		// 	System.out.println(count2 + " -> " + lista.get(count2));
-		// }
 	return lista;
 
 }

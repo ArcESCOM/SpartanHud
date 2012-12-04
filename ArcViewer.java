@@ -3,17 +3,20 @@
 F:
 cd F:\Hellvetica\ArcViewer
 javac ListFiles.java
-javac ArcViewer.java
 javac ImagenBean.java
+javac SlideShow.java
+javac ArcViewer.java
+
 java ArcViewer
 
 */
 
 
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
-import java.io.*;
 import java.awt.event.*;
+import java.io.*;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.*;
 import java.io.File;
@@ -37,26 +40,20 @@ public class ArcViewer extends JPanel implements ActionListener {
 	private JButton carpeta;
 	private JFileChooser chooser;
 	private JMenuBar menu;
-	int posicion=-2;
+	
 	
 	public int returnChooser;
+	public ArrayList<String> imagenes;
+	public ArrayList<ImagenBean> imagenesbean = new ArrayList<ImagenBean>();
+	ListFiles lista = new ListFiles();
+	
+	int indexaux = 0;
+	int posicion = -2;
+	
 	Color colorGris = new Color(0x202020);
 
 
-	public ArrayList<String> imagenes;
-	ListFiles lista = new ListFiles();
-	ImagenBean Iaux;
-
-	public ArrayList<ImagenBean> imagenesbean = new ArrayList<ImagenBean>();
-	
-	int indexaux = 0;
-
-	
-
-
-
-
-
+	SlideShow slide = new SlideShow();
 
 
 	public void init() {
@@ -64,12 +61,12 @@ public class ArcViewer extends JPanel implements ActionListener {
 		areaventana = new JPanel();
 		areabotones = new JPanel();
 		imagen = new JLabel("");
-		presentacion = new JButton("play");
+		presentacion = new JButton("Diapositiva");
 		siguiente = new JButton("next");
 		atras = new JButton("previous");
 		zoom = new JSlider();
 		carpeta = new JButton("Seleccionar Carpeta");
-		carpeta.addActionListener(this);
+		
 
 		/* Agregando los componentes */
 
@@ -81,11 +78,15 @@ public class ArcViewer extends JPanel implements ActionListener {
 		areabotones.add(siguiente);
 		areabotones.add(zoom);
 		areabotones.add(carpeta);
+
 		siguiente.addActionListener(this);
 		atras.addActionListener(this);
-		this.setLayout (new BorderLayout()); //layout para todo el programa
-		add(areaventana, BorderLayout.CENTER); //layout solo para el area de muestra de imagen
-		add(areabotones, BorderLayout.SOUTH); //layout para todos los botones
+		presentacion.addActionListener(this);
+		carpeta.addActionListener(this);
+
+		this.setLayout (new BorderLayout());
+		add(areaventana, BorderLayout.CENTER);
+		add(areabotones, BorderLayout.SOUTH);
 
 		/* Abre el selector desde que inicia el programa */
 
@@ -112,6 +113,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 		//Hasta acá...
 
 
+
 	}
 
 
@@ -121,7 +123,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 
 	public void actionPerformed (ActionEvent event) {
 
-		if(posicion == -2)
+		if (posicion == -2)
 			posicion = indexaux;
 
 
@@ -164,6 +166,26 @@ public class ArcViewer extends JPanel implements ActionListener {
 				posicion = imagenesbean.size()-1;	}
 			imagen.setIcon(new ImageIcon(imagenesbean.get(posicion).getIcon()));
 		}
+
+
+
+		//Presentacion
+		if (event.getSource() == presentacion) {
+
+			if (presentacion.getText() == "Detener") {
+				slide.detener();
+				posicion = slide.getPosicion();
+				presentacion.setText("Diapositiva");
+				return;
+			}
+
+			if (presentacion.getText() == "Diapositiva") {
+				slide.setTodo(posicion, imagen, imagenesbean);
+				new Thread (slide,"prueba").start();
+				presentacion.setText("Detener");
+				return;
+			}
+		}
 	
 
 	}
@@ -174,17 +196,15 @@ public class ArcViewer extends JPanel implements ActionListener {
 
 	public ArcViewer() {
 
-		//start();
 
-		JFrame frame = new JFrame("ArcViewer v.0.1");
-			
+		JFrame frame = new JFrame("ArcViewer v.0.1");			
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //Cierra el programa por la buena
 
 		frame.add("Center", this);
 		frame.setSize(900, 600);
 		frame.setVisible(true);
 
-		init(); 
+		init();
 	}
 
 
