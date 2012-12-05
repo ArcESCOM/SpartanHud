@@ -11,6 +11,7 @@ import java.util.*;
 
 public class ImagenBean {
 
+	String newLine = String.format("%n");
 	String iconpath;
 	String comentario;
 	int alto;
@@ -18,9 +19,8 @@ public class ImagenBean {
 
 
 	ImagenBean (String ruta, int alto, int ancho) {
-
 		iconpath = ruta;
-		comentario = "Comenta algo...";
+		comentario = "";
 		this.alto = alto;
 		this.ancho = ancho;
 	}
@@ -39,11 +39,12 @@ public class ImagenBean {
 	}
 
 	void SetComentario (String comentario) {
-		this.comentario = comentario;
+		this.comentario = this.comentario + newLine + comentario;
 	}
 
 	int getAlto () {
-		return alto;
+		ImageIcon img = new ImageIcon(iconpath);
+		return img.getIconHeight();
 	}
 
 	void setAlto (int alto) {
@@ -51,8 +52,10 @@ public class ImagenBean {
 	}
 
 	int getAncho () {
-		return ancho;
+		ImageIcon img = new ImageIcon(iconpath);
+		return img.getIconWidth();
 	}
+	
 	void setAncho (int ancho) {
 		this.ancho = ancho;
 	}
