@@ -28,8 +28,8 @@ import java.util.*;
 public class ArcViewer extends JPanel implements ActionListener {
 
 	
-	private JPanel areaventana;
-	private JPanel areabotones;
+	public JPanel areaventana;
+	public JPanel areabotones;
 	private JLabel imagen;
 
 	private JButton presentacion;
@@ -39,22 +39,23 @@ public class ArcViewer extends JPanel implements ActionListener {
 	private JButton grid;
 	private JButton bcomentario;
 	
-	private JSlider zoom;
+	private JSlider ptiempo;
 	private JFileChooser chooser;
-	private JScrollBar desplazamiento;
+	//private JScrollPane desplazamiento;
 	
 	public int returnChooser;
 	
 	public ArrayList<String> imagenes;
 	public ArrayList<ImagenBean> imagenesbean = new ArrayList<ImagenBean>();
 
+	ajustaImagen ajustar = new ajustaImagen();
 
 
 	JButton imgButtonArray[];
-	JButton imgButtonNoArray;
 
 	
-
+	boolean corrobora =false;
+	boolean isPresentacion = false;
 	int indexaux = 0;
 	int posicion = -2;
 	Color colorGris = new Color(0x202020);
@@ -66,7 +67,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 
 
 	ImageIcon imgPlay = new ImageIcon("play.png");
-	ImageIcon imaPausa = new ImageIcon("pause.png");
+	ImageIcon imgPausa = new ImageIcon("pause.png");
 	ImageIcon imgSiguiente = new ImageIcon("siguiente.png");
 	ImageIcon imgAnterior = new ImageIcon("anterior.png");
 	ImageIcon imgNuevaCarpeta = new ImageIcon("import.png");
@@ -82,33 +83,32 @@ public class ArcViewer extends JPanel implements ActionListener {
 		presentacion = new JButton(imgPlay);
 		siguiente = new JButton(imgSiguiente);
 		atras = new JButton(imgAnterior);
-		zoom = new JSlider();
+		ptiempo = new JSlider();
 		carpeta = new JButton(imgNuevaCarpeta);
 		grid = new JButton(imgGrid);
-		desplazamiento = new JScrollBar();
+		//desplazamiento = new JScrollPane(areaventana);
 		bcomentario = new JButton(imgComentario);
-
 
 
 
 		/* Agregando los componentes */
 
 		areaventana.add(imagen);
-		areaventana.add(desplazamiento);
+		//areaventana.add(desplazamiento);
 
 		areabotones.add(grid);
 		areabotones.add(atras);
 		areabotones.add(presentacion);
 		areabotones.add(siguiente);
-		areabotones.add(zoom);
+		areabotones.add(ptiempo);
 		areabotones.add(carpeta);
 		areabotones.add(bcomentario);
 
 		areabotones.setBackground(colorGris);
 		areaventana.setBackground(colorGris);
 
-		desplazamiento.setVisible(false);
-
+		//desplazamiento.setVisible(false);
+		//areaventana.add(desplazamiento); 
 
 
 
@@ -118,15 +118,15 @@ public class ArcViewer extends JPanel implements ActionListener {
 		siguiente.setBackground(colorGris);
 		carpeta.setBackground(colorGris);
 		grid.setBackground(colorGris);
-		zoom.setBackground(colorGris);
+		ptiempo.setBackground(colorGris);
 		bcomentario.setBackground(colorGris);
 
-		presentacion.setPreferredSize(new Dimension(50, 50));
-		atras.setPreferredSize(new Dimension(50, 50));
-		siguiente.setPreferredSize(new Dimension(50, 50));
-		carpeta.setPreferredSize(new Dimension(50, 50));
-		grid.setPreferredSize(new Dimension(50, 50));
-		bcomentario.setPreferredSize(new Dimension(50, 50));
+		presentacion.setPreferredSize(new Dimension(100, 80));
+		atras.setPreferredSize(new Dimension(100, 80));
+		siguiente.setPreferredSize(new Dimension(100, 80));
+		carpeta.setPreferredSize(new Dimension(100, 80));
+		grid.setPreferredSize(new Dimension(100, 80));
+		bcomentario.setPreferredSize(new Dimension(100, 80));
 
 		grid.setFocusPainted(false);
 		atras.setFocusPainted(false);
@@ -140,7 +140,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 		siguiente.setBorder(null);
 		carpeta.setBorder(null);
 		presentacion.setBorder(null);
-		desplazamiento.setBorder(null);
+		//desplazamiento.setBorder(null);
 		areabotones.setBorder(null);
 		areaventana.setBorder(null);
 		bcomentario.setBorder(null);
@@ -204,8 +204,11 @@ public class ArcViewer extends JPanel implements ActionListener {
 			}
 		}
 
+		
+
 		//Hasta acá...
 
+		ptiempo.setVisible(false);
 	}
 
 
@@ -253,7 +256,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 			if (posicion >= imagenesbean.size()) {
 				posicion = 0; }
 
-			imagen.setIcon(ajusteImg(new ImageIcon(imagenesbean.get(posicion).getIcon()),
+			imagen.setIcon(ajustar.ajusteImg(new ImageIcon(imagenesbean.get(posicion).getIcon()),
 				imagenesbean.get(posicion).getAncho(),
 				imagenesbean.get(posicion).getAlto(),
 				areaventana.getWidth()-50, areaventana.getHeight()
@@ -268,7 +271,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 			if (posicion == -1) {
 				posicion = imagenesbean.size()-1;	}
 
-			imagen.setIcon(ajusteImg(new ImageIcon(imagenesbean.get(posicion).getIcon()),
+			imagen.setIcon(ajustar.ajusteImg(new ImageIcon(imagenesbean.get(posicion).getIcon()),
 				imagenesbean.get(posicion).getAncho(),
 				imagenesbean.get(posicion).getAlto(),
 				areaventana.getWidth()-50, areaventana.getHeight()
@@ -280,17 +283,39 @@ public class ArcViewer extends JPanel implements ActionListener {
 		//Presentacion iniciar/detener
 		if (event.getSource() == presentacion) {
 
-			if (presentacion.getIcon() == imaPausa) {
+
+			if (isPresentacion == false) {
+				grid.setVisible(false);
+				atras.setVisible(false);
+				siguiente.setVisible(false);
+				carpeta.setVisible(false);
+				bcomentario.setVisible(false);
+				ptiempo.setVisible(true);	
+			}
+
+			if (isPresentacion == true) {
+				grid.setVisible(true);
+				atras.setVisible(true);
+				siguiente.setVisible(true);
+				carpeta.setVisible(true);
+				bcomentario.setVisible(true);
+				ptiempo.setVisible(false);
+			}
+
+
+			if (presentacion.getIcon() == imgPausa) {
 				slide.detener();
 				posicion = slide.getPosicion();
 				presentacion.setIcon(imgPlay);
+				isPresentacion = false;
 				return;
 			}
 
 			if (presentacion.getIcon() == imgPlay) {
-				slide.setTodo(posicion, imagen, imagenesbean);
+				slide.setTodo(posicion, imagen, imagenesbean, areaventana, ptiempo);
 				new Thread (slide,"prueba").start();
-				presentacion.setIcon(imaPausa);
+				presentacion.setIcon(imgPausa);
+				isPresentacion = true;
 				return;
 			}
 		}
@@ -305,27 +330,31 @@ public class ArcViewer extends JPanel implements ActionListener {
 			presentacion.setVisible(false);
 			grid.setVisible(false);
 			bcomentario.setVisible(false);
-			
-			imgButtonNoArray = new JButton();
+			carpeta.setVisible(false);
+			ptiempo.setVisible(false);
 
-			for (int aux1 = 0; aux1 < imagenesbean.size(); aux1++) {
+			//desplazamiento.setVisible(true);  
+
+			if(corrobora==true){
+				for(int celular=0; celular<imgButtonArray.length; celular++){
+					imgButtonArray[celular].setVisible(true);
+				}
 				
-				areaventana.add(imgButtonNoArray = new JButton());
+			}
 
-				// System.out.println(imagenesbean.get(aux1).getAncho() + "," +  imagenesbean.get(aux1).getAlto());
+			if(corrobora == false){
+				imgButtonArray = new JButton[imagenesbean.size()];
 
-				imgButtonNoArray.setIcon(ajusteImg(
-					new ImageIcon(imagenesbean.get(aux1).getIcon()),
-					imagenesbean.get(aux1).getAncho(),
-					imagenesbean.get(aux1).getAlto(),
-					250, 250));
-
-
-				imgButtonNoArray.setName("IMAGEN");
-				imgButtonNoArray.setPreferredSize(new Dimension(200, 200));
-				imgButtonNoArray.addActionListener(this);
-
-			}			
+				for(int goku=0; goku<imagenesbean.size(); goku++){
+					areaventana.add(imgButtonArray[goku] = new JButton());
+					imgButtonArray[goku].setPreferredSize(new Dimension(200,200));
+					imgButtonArray[goku].addActionListener(this);
+					imgButtonArray[goku].setBackground(colorGris);
+					imgButtonArray[goku].setIcon(ajustar.ajusteCuadrado(new ImageIcon(imagenesbean.get(goku).getIcon())));
+					corrobora=true;
+				
+				}
+			}
 		}		
 
 
@@ -340,26 +369,37 @@ public class ArcViewer extends JPanel implements ActionListener {
 
 
 
-		// JButton botonaux = (JButton)event.getSource();
-
-		// System.out.println(botonaux.getBackground());
-		// System.out.println(color111);
-
-		// if (botonaux.getBackground() == color111) {
-		// 	System.out.println("ASDASDSASDAASD");
-		// 	siguiente.setEnabled(false);
-		// 	atras.setEnabled(false);
-		// 	presentacion.setEnabled(false);
-		// 	grid.setEnabled(false);
-
-		// }
-
-
-
-
-
 
 		}
+
+		//Cuando se apreta un boton de la rejilla
+		if(corrobora==true){
+			for(int alice=0; alice<imgButtonArray.length; alice++){
+				if(event.getSource() == imgButtonArray[alice]){
+					for(int wonderland=0; wonderland<imgButtonArray.length; wonderland++){
+						imgButtonArray[wonderland].setVisible(false);
+					}
+					posicion=alice;
+					
+					imagen.setIcon(ajustar.ajusteImg(new ImageIcon(imagenesbean.get(posicion).getIcon()),
+					imagenesbean.get(posicion).getAncho(),
+					imagenesbean.get(posicion).getAlto(),
+					areaventana.getWidth()-50, areaventana.getHeight()
+					));
+
+					imagen.setVisible(true);
+					siguiente.setVisible(true);
+					atras.setVisible(true);
+					presentacion.setVisible(true);
+					grid.setVisible(true);
+					bcomentario.setVisible(true);
+					carpeta.setVisible(true);
+
+				}
+			}
+
+		}
+			
 	}
 
 
@@ -388,73 +428,6 @@ public class ArcViewer extends JPanel implements ActionListener {
 		new ArcViewer();
 	
 	}
-
-
-
-
-
-	ImageIcon ajusteImg(ImageIcon img, int ancho, int alto, int contenedorx, int contenedory) {
-
-		contenedory = contenedorx;
-		Image aux_img;
-		aux_img = img.getImage();
-
-		//Si la imagen mide mas que el contenedor, en el lado que sea
-
-		if (ancho >= contenedorx ||  alto >= contenedorx || alto >= contenedory || ancho >= contenedory) {
-
-			if (contenedorx >= contenedory) {
-				contenedorx = contenedory;
-			}
-			if (contenedory > contenedorx) {
-				contenedory = contenedorx;
-			}
-
-			if (ancho >= alto) {
-				Image newimg = aux_img.getScaledInstance(contenedorx*ancho/alto, contenedory, java.awt.Image.SCALE_SMOOTH);
-				img = new ImageIcon(newimg);
-				return img;
-			}
-			else {
-				Image newimg = aux_img.getScaledInstance(contenedory*alto/ancho, contenedory, java.awt.Image.SCALE_SMOOTH);
-				
-				img = new ImageIcon(newimg);
-				return img;
-			}			
-		}
-		return img;
-	}
-
-
-
-	// ImageIcon ajusteImg(ImageIcon img, int ancho, int alto, int contenedorx, int contenedory) {
-
-	// 	contenedory = contenedorx;
-	// 	Image aux_img;
-	// 	aux_img = img.getImage();
-
-
-	// 	if (ancho >= contenedorx || alto >= contenedory) {
-			
-	// 	}
-
-	// 	if (contenedorx >= contenedory) {
-	// 		contenedorx = contenedory; }
-	// 	if (contenedory > contenedorx) {
-	// 		contenedory = contenedorx;
-	// 	}
-
-	// 	if (ancho >= alto) {
-	// 		Image newimg = aux_img.getScaledInstance(contenedorx, contenedory*alto/ancho, java.awt.Image.SCALE_SMOOTH);
-	// 		img = new ImageIcon(newimg);
-	// 		return img;
-	// 	}
-	// 	else {
-	// 		Image newimg = aux_img.getScaledInstance(contenedorx*ancho/alto, contenedory, java.awt.Image.SCALE_SMOOTH);
-	// 		img = new ImageIcon(newimg);
-	// 		return img;
-	// 	}
-	// }
 
 
 
