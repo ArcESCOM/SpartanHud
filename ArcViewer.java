@@ -38,6 +38,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 	private JButton carpeta;
 	private JButton grid;
 	private JButton bcomentario;
+	private JButton zoom;
 	
 	private JSlider ptiempo;
 	private JFileChooser chooser;
@@ -73,6 +74,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 	ImageIcon imgNuevaCarpeta = new ImageIcon("import.png");
 	ImageIcon imgGrid = new ImageIcon("grid.png");
 	ImageIcon imgComentario = new ImageIcon("comment.png");
+	ImageIcon imgZoom = new ImageIcon("zoom.png");
 
 
 	public void init() {
@@ -86,8 +88,8 @@ public class ArcViewer extends JPanel implements ActionListener {
 		ptiempo = new JSlider();
 		carpeta = new JButton(imgNuevaCarpeta);
 		grid = new JButton(imgGrid);
-		//desplazamiento = new JScrollPane(areaventana);
 		bcomentario = new JButton(imgComentario);
+		zoom = new JButton(imgZoom);
 
 
 
@@ -103,6 +105,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 		areabotones.add(ptiempo);
 		areabotones.add(carpeta);
 		areabotones.add(bcomentario);
+		areabotones.add(zoom);
 
 		areabotones.setBackground(colorGris);
 		areaventana.setBackground(colorGris);
@@ -120,6 +123,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 		grid.setBackground(colorGris);
 		ptiempo.setBackground(colorGris);
 		bcomentario.setBackground(colorGris);
+		zoom.setBackground(colorGris);
 
 		presentacion.setPreferredSize(new Dimension(100, 80));
 		atras.setPreferredSize(new Dimension(100, 80));
@@ -127,6 +131,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 		carpeta.setPreferredSize(new Dimension(100, 80));
 		grid.setPreferredSize(new Dimension(100, 80));
 		bcomentario.setPreferredSize(new Dimension(100, 80));
+		zoom.setPreferredSize(new Dimension(100, 80));
 
 		grid.setFocusPainted(false);
 		atras.setFocusPainted(false);
@@ -134,16 +139,17 @@ public class ArcViewer extends JPanel implements ActionListener {
 		carpeta.setFocusPainted(false);
 		presentacion.setFocusPainted(false);
 		bcomentario.setFocusPainted(false);
+		zoom.setFocusPainted(false);
 	
 		grid.setBorder(null);
 		atras.setBorder(null);
 		siguiente.setBorder(null);
 		carpeta.setBorder(null);
 		presentacion.setBorder(null);
-		//desplazamiento.setBorder(null);
 		areabotones.setBorder(null);
 		areaventana.setBorder(null);
 		bcomentario.setBorder(null);
+		zoom.setBorder(null);
 		/* GUI GUI GUI GUI  */
 
 
@@ -156,6 +162,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 		carpeta.addActionListener(this);
 		grid.addActionListener(this);
 		bcomentario.addActionListener(this);
+		zoom.addActionListener(this);
 
 
 
@@ -164,12 +171,14 @@ public class ArcViewer extends JPanel implements ActionListener {
 		add(areabotones, BorderLayout.SOUTH);
 
 
+		ptiempo.setVisible(false);
 
 		siguiente.setEnabled(false);
 		atras.setEnabled(false);
 		presentacion.setEnabled(false);
 		grid.setEnabled(false);
 		bcomentario.setEnabled(false);
+		zoom.setEnabled(false);
 
 		/* Abre el selector desde que inicia el programa */
 
@@ -181,34 +190,55 @@ public class ArcViewer extends JPanel implements ActionListener {
 		//Abrir archivo es de acá...
 		returnChooser = chooser.showOpenDialog(ArcViewer.this);
 
+
+
 		if (returnChooser == 0) {
+
 			imagenes = lista.Miranda(chooser, returnChooser);
+			
 			siguiente.setEnabled(true);
 			atras.setEnabled(true);
 			presentacion.setEnabled(true);
 			grid.setEnabled(true);
 			bcomentario.setEnabled(true);
+			zoom.setEnabled(true);
 
-		}
-
-		// imagenes = lista.Miranda(chooser, returnChooser);
-		//Esto hace magia
-		for (int asd1=0; asd1 < imagenes.size(); asd1++) {
-			imagenesbean.add(new ImagenBean(imagenes.get(asd1),0,0));
-		}
-		String getImgSelected = chooser.getSelectedFile().getPath();
-		for (int index=0; index < imagenesbean.size(); index++) {
-			if (getImgSelected.equals( imagenesbean.get(index).getIcon() )) {
-				imagen.setIcon(new ImageIcon(imagenesbean.get(index).getIcon()));
-				indexaux = index;
+			for (int asd1=0; asd1 < imagenes.size(); asd1++) {
+				imagenesbean.add(new ImagenBean(imagenes.get(asd1),0,0));
+			}
+			
+			String getImgSelected = chooser.getSelectedFile().getPath();
+			
+			for (int index=0; index < imagenesbean.size(); index++) {
+				if (getImgSelected.equals( imagenesbean.get(index).getIcon() )) {
+					imagen.setIcon(new ImageIcon(imagenesbean.get(index).getIcon()));
+					indexaux = index;
+				}
 			}
 		}
 
+		else {
+			System.out.println("No Selection");
+			carpeta.setEnabled(true);
+		}
+
+
+
+
+
+
+		// for (int asd1=0; asd1 < imagenes.size(); asd1++) {
+		// 	imagenesbean.add(new ImagenBean(imagenes.get(asd1),0,0));
+		// }
+		// String getImgSelected = chooser.getSelectedFile().getPath();
+		// for (int index=0; index < imagenesbean.size(); index++) {
+		// 	if (getImgSelected.equals( imagenesbean.get(index).getIcon() )) {
+		// 		imagen.setIcon(new ImageIcon(imagenesbean.get(index).getIcon()));
+		// 		indexaux = index;
+		// 	}
+		// }
+
 		
-
-		//Hasta acá...
-
-		ptiempo.setVisible(false);
 	}
 
 
@@ -229,8 +259,19 @@ public class ArcViewer extends JPanel implements ActionListener {
 		//Abrir nueva imagen
 		if (event.getSource() == carpeta) {
 
+			siguiente.setEnabled(true);
+			atras.setEnabled(true);
+			presentacion.setEnabled(true);
+			grid.setEnabled(true);
+			bcomentario.setEnabled(true);
+			zoom.setEnabled(true);
+
 			imagenesbean.clear();
-			imagenes.clear();
+
+			if (imagenes != null) {
+				imagenes.clear();
+			}
+
 			returnChooser = chooser.showOpenDialog(ArcViewer.this);
 			imagenes = lista.Miranda(chooser, returnChooser);
 			
@@ -290,6 +331,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 				siguiente.setVisible(false);
 				carpeta.setVisible(false);
 				bcomentario.setVisible(false);
+				zoom.setVisible(false);
 				ptiempo.setVisible(true);	
 			}
 
@@ -299,6 +341,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 				siguiente.setVisible(true);
 				carpeta.setVisible(true);
 				bcomentario.setVisible(true);
+				zoom.setVisible(true);
 				ptiempo.setVisible(false);
 			}
 
@@ -330,6 +373,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 			presentacion.setVisible(false);
 			grid.setVisible(false);
 			bcomentario.setVisible(false);
+			zoom.setVisible(false);
 			carpeta.setVisible(false);
 			ptiempo.setVisible(false);
 
@@ -363,17 +407,14 @@ public class ArcViewer extends JPanel implements ActionListener {
 		//Comentario
 		if (event.getSource() == bcomentario) {
 			new Comentario(imagenesbean.get(posicion), posicion);
-
-
-
-
-
-
-
 		}
 
+
+
+
+
 		//Cuando se apreta un boton de la rejilla
-		if(corrobora==true){
+		if (corrobora == true) {
 			for(int alice=0; alice<imgButtonArray.length; alice++){
 				if(event.getSource() == imgButtonArray[alice]){
 					for(int wonderland=0; wonderland<imgButtonArray.length; wonderland++){
@@ -393,12 +434,23 @@ public class ArcViewer extends JPanel implements ActionListener {
 					presentacion.setVisible(true);
 					grid.setVisible(true);
 					bcomentario.setVisible(true);
+					zoom.setVisible(true);
 					carpeta.setVisible(true);
 
 				}
 			}
-
 		}
+
+
+
+
+
+		if (event.getSource() == zoom) {
+			System.out.println("Haciendo un ZOOOOOOOOOOOOM");
+		}
+
+
+
 			
 	}
 
@@ -408,7 +460,7 @@ public class ArcViewer extends JPanel implements ActionListener {
 
 	public ArcViewer() {
 
-		JFrame frame = new JFrame("ArcViewer v.0.1");			
+		JFrame frame = new JFrame("ArcViewer v.0.9");			
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		frame.add("Center", this);
