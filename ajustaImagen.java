@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.*;
 
 class ajustaImagen{
-		ImageIcon ajusteImg(ImageIcon img, int ancho, int alto, int contenedorx, int contenedory) {
+	ImageIcon ajusteImg(ImageIcon img, int ancho, int alto, int contenedorx, int contenedory) {
 
 		//contenedory = contenedorx;
 		Image aux_img;
@@ -17,9 +17,13 @@ class ajustaImagen{
 
 		//Si la imagen mide mas que el contenedor, en el lado que sea
 
-		if (ancho >= contenedorx ||  alto >= contenedorx || alto >= contenedory || ancho >= contenedory) {
+		if ((ancho >= contenedorx ||  alto >= contenedorx || alto >= contenedory || ancho >= contenedory) || ((ancho <= contenedorx ||  alto <= contenedorx || alto <= contenedory || ancho <= contenedory))) {
 
-			if (ancho >= alto) {
+			if(alto == ancho){
+				Image newimg = aux_img.getScaledInstance(contenedory, contenedory, java.awt.Image.SCALE_SMOOTH);
+				img = new ImageIcon(newimg);
+				return img;
+			}else if (ancho >= alto) {
 				Image newimg = aux_img.getScaledInstance(contenedorx, contenedorx*alto/ancho, java.awt.Image.SCALE_SMOOTH);
 				img = new ImageIcon(newimg);
 				return img;
